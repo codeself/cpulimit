@@ -242,7 +242,7 @@ void limit_process(pid_t pid, double limit, int include_children)
 		}
 
 		//adjust work and sleep time slices
-		if (pcpu < 0) {
+		if (pcpu <= 0) {
 			//it's the 1st cycle, initialize workingrate
 			pcpu = limit;
 			workingrate = limit;
@@ -307,7 +307,9 @@ void limit_process(pid_t pid, double limit, int include_children)
 				node = next_node;
 			}
 			//now the processes are sleeping
-			nanosleep(&tsleep,NULL);
+			if (nanosleep(&tsleep,NULL)) {
+			    ////????? 处理失败场景，否则，CPU可能会100%
+			}
 		}
 		c++;
 	}
